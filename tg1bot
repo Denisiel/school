@@ -1,0 +1,72 @@
+import telebot
+from telebot import types
+import random
+
+TOKEN = "ТВОЙ_ТОКЕН_ЗДЕСЬ"
+
+bot = telebot.TeleBot(TOKEN)
+
+
+# --- Команда /start ---
+@bot.message_handler(commands=['start'])
+def start(message):
+    bot.send_message(
+        message.chat.id,
+        "Привет! 👋\nЯ бот настроения.\nНапиши /mood чтобы выбрать настроение."
+    )
+
+
+# --- Команда /mood ---
+@bot.message_handler(commands=['mood'])
+def mood(message):
+    markup = types.InlineKeyboardMarkup()
+
+    btn1 = types.InlineKeyboardButton("Весёлое 😄", callback_data="happy")
+    btn2 = types.InlineKeyboardButton("Нормальное 😐", callback_data="normal")
+    btn3 = types.InlineKeyboardButton("Грустное 😢", callback_data="sad")
+    btn4 = types.InlineKeyboardButton("Получить совет 💡", callback_data="advice")
+
+    markup.add(btn1, btn2, btn3)
+    markup.add(btn4)
+
+    bot.send_message(message.chat.id, "Выбери своё настроение:", reply_markup=markup)
+
+
+# --- Обработка нажатий (callback) ---
+@bot.callback_query_handler(func=lambda call: True)
+def callback_handler(call):
+
+    if call.data == "happy":
+        bot.send_message(call.message.chat.id,
+                         "Отлично! Тогда сегодня будет хороший день! 🌞")
+
+    elif call.data == "normal":
+        bot.send_message(call.message.chat.id,
+                         "Хорошо! Пусть день пройдет спокойно 🙂")
+
+    elif call.data == "sad":
+        bot.send_message(call.message.chat.id,
+                         "Не переживай 💙 Всё обязательно наладится!")
+
+    elif call.data == "advice":
+        advices = [
+            "Не откладывай дела на потом",
+            "Сделай маленький шаг вперёд уже сейчас",
+            "Отдохни 10 минут и продолжай",
+            "Ты справишься 💪",
+            "Разбей задачу на части"
+        ]
+        bot.send_message(call.message.chat.id, random.choice(advices))
+
+
+# --- Обработка обычных сообщений ---
+@bot.message_handler(content_types=['text'])
+def handle_text(message):
+    bot.send_message(
+        message.chat.id,
+        "Я пока не понимаю это сообщение 🤖\nПопробуй команду /mood"
+    )
+
+
+# --- Запуск бота ---
+bot.polling(none_stop=True)

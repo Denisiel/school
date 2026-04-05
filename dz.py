@@ -71,4 +71,5 @@ class Warehouse:
         print("="*60)
         print(f"Всего товаров: {len(self.products)}")
         print()
+        
     
