@@ -7,7 +7,6 @@ TOKEN = "ТВОЙ_ТОКЕН_ЗДЕСЬ"
 bot = telebot.TeleBot(TOKEN)
 
 
-# --- Команда /start ---
 @bot.message_handler(commands=['start'])
 def start(message):
     bot.send_message(
@@ -16,7 +15,6 @@ def start(message):
     )
 
 
-# --- Команда /mood ---
 @bot.message_handler(commands=['mood'])
 def mood(message):
     markup = types.InlineKeyboardMarkup()
@@ -32,7 +30,6 @@ def mood(message):
     bot.send_message(message.chat.id, "Выбери своё настроение:", reply_markup=markup)
 
 
-# --- Обработка нажатий (callback) ---
 @bot.callback_query_handler(func=lambda call: True)
 def callback_handler(call):
 
@@ -59,7 +56,6 @@ def callback_handler(call):
         bot.send_message(call.message.chat.id, random.choice(advices))
 
 
-# --- Обработка обычных сообщений ---
 @bot.message_handler(content_types=['text'])
 def handle_text(message):
     bot.send_message(
